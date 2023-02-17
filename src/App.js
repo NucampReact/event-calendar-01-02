@@ -1,5 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
+import EventListing from './components/EventListing';
 
 /*
   JSX (JavaScript XML): Markup language that translates XML into JavaScript then into HTML
@@ -27,7 +28,7 @@ import './App.css';
 
 
 
-const messages = ['Welcome to my application!', 'Get started by clicking Shop Now', 'Talk to an agent today'];
+const messages = ['Welcome to my application!', 'Get started by clicking booking your first event', 'Talk to an agent today'];
 
 /*
   [
@@ -46,11 +47,11 @@ function Subtitle(props) {
 function App() {
   return (
     <div className="App">
-      <h1>Event Calendar Application</h1>
       {messages.map((message, index) => {
         // Each child in a list should have a unique "key" prop.
         return <Subtitle key={index} msg={message} /> // create a subtitle component and pass to it our message
       })}
+      <EventListing />
     </div>
   );
 }
