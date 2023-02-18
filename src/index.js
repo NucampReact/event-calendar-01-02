@@ -4,16 +4,23 @@ import './index.css';
 import App from './App';
 import Navigation from './components/Navigation';
 import { Container } from 'reactstrap';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import EventListing from './components/EventListing';
+import EventDetails from './components/EventDetails';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <>
+  <BrowserRouter>
     <Navigation />
     <Container>
-      <App />
+      <Routes>
+        <Route path="/" element={<App />} />
+        <Route path="/events" element={<EventListing />} />
+        <Route path="/events/:event_name" element={<EventDetails />} />
+      </Routes>
     </Container>
-  </>
+  </BrowserRouter>
 );
 
 /*

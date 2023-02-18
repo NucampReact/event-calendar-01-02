@@ -51,7 +51,6 @@ function App() {
         // Each child in a list should have a unique "key" prop.
         return <Subtitle key={index} msg={message} /> // create a subtitle component and pass to it our message
       })}
-      <EventListing />
     </div>
   );
 }

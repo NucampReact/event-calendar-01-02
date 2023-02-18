@@ -8,6 +8,7 @@ import {
   NavItem,
   NavLink
 } from 'reactstrap';
+import { NavLink as RRNavLink } from 'react-router-dom';
 
 function Navigation(args) {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,7 +23,10 @@ function Navigation(args) {
         <Collapse isOpen={isOpen} navbar>
           <Nav className="me-auto" navbar>
             <NavItem >
-              <NavLink to="/">Home</NavLink>
+              <NavLink tag={RRNavLink} to="/">Home</NavLink>
+            </NavItem>
+            <NavItem >
+              <NavLink tag={RRNavLink} to="/events">Events</NavLink>
             </NavItem>
           </Nav>
         </Collapse>
