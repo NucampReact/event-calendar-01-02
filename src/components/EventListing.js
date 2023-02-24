@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Card, Button, CardHeader, CardBody, Table } from 'reactstrap';
 import { EVENTS } from '../data/Events';
 import { Link } from 'react-router-dom';
+import EventCart from './EventCart';
 
 
 // <EventListing /> = EventListing();
@@ -21,25 +22,39 @@ import { Link } from 'react-router-dom';
     EventListing() => quantity = 2 // click +
     EventListing() => quantity = 3
 */
+const initialEventData = EVENTS.map(e => ({ name: e.name, quantity: 0 }));
 const EventListing = () => {
   // useState() returns an ARRAY of two values [data, a function to set the data]
-  const [quantity, setQuantity] = useState(0);
+  const [events, setEvents] = useState(initialEventData);
   const [addedToCart, setAddedToCart] = useState(false);
 
   // Challenge: Make quantity updates only affect the event you're looking at
   // { event: 'Boys2men', quantity: 0 }
 
-  const decrementQuantity = (event) => {
-    setQuantity(quantity - 1); // use the state function to update the state data
+  const decrementQuantity = (eventName) => {
+    const nextEvents = events.map(e => {
+      if (e.name === eventName) {
+        e.quantity = e.quantity - 1;
+        console.log(e.quantity);
+        return e;
+      } else {
+        return e;
+      }
+    })
+    setEvents(nextEvents);
   };
 
-  const incrementQuantity = (event) => {
-    console.log(event);
-    // increase my quantity by 1
-    // quantity = quantity + 1; // Never re-runs our function (aka Updates/Re-render our component)
-    let newQuantity = quantity + 1;
-    setQuantity(quantity + 1); // use the state function to update the state data
-    console.log("My quantity is", newQuantity);
+  const incrementQuantity = (eventName) => {
+    const nextEvents = events.map(e => {
+      if (e.name === eventName) {
+        e.quantity = e.quantity + 1;
+        console.log(e.quantity);
+        return e;
+      } else {
+        return e;
+      }
+    })
+    setEvents(nextEvents);
   }
 
   const addToCart = (event) => {
@@ -50,18 +65,19 @@ const EventListing = () => {
   const removeCart = (event) => {
     // Toggle the state 'addedToCart' to true
     setAddedToCart(false);
-    setQuantity(0);
+    const initialEventData = EVENTS.map(e => ({ name: e.name, quantity: 0 }));
+    setEvents(initialEventData);
   }
 
   const showCart = () => {
     if (addedToCart) {
-      return (<section>
-        <p>You now have {quantity} tickets in your cart</p>
-      </section>)
+      return (<EventCart show cart={events} />)
     } else {
-      return null;
+      return <EventCart cart={initialEventData} />;
     }
   }
+
+  console.log(events);
   return (
     <Card>
       <CardHeader>Upcoming Events</CardHeader>
@@ -81,15 +97,15 @@ const EventListing = () => {
             {EVENTS.map(event => {
               return (
                 <tr key={event.name}>
-                  <td><img src={event.poster} width="40" /></td>
+                  <td><img alt={event.name} src={event.poster} width="40" /></td>
                   <td>{event.name}</td>
                   <td>{event.ticketMin}</td>
                   <td>{event.seatsAvailable}</td>
                   <td>{event.date}</td>
                   <td>
-                    <Button color="info" size="sm" onClick={decrementQuantity} >-</Button><hr />
-                    <p>{quantity}</p>
-                    <Button color="info" size="sm" onClick={incrementQuantity}>+</Button>
+                    <Button color="info" size="sm" onClick={e => decrementQuantity(event.name)} >-</Button><hr />
+                    <p>{events.find(e => e.name === event.name).quantity}</p>
+                    <Button color="info" size="sm" onClick={e => incrementQuantity(event.name)}>+</Button>
                   </td>
                   <td>
                     <Link to={`/events/${event.name}`}>View Details</Link>

@@ -6,7 +6,11 @@ import {
   NavbarBrand,
   Nav,
   NavItem,
-  NavLink
+  NavLink,
+  UncontrolledDropdown,
+  DropdownToggle,
+  DropdownMenu,
+  DropdownItem
 } from 'reactstrap';
 import { NavLink as RRNavLink } from 'react-router-dom';
 
@@ -17,7 +21,7 @@ function Navigation(args) {
 
   return (
     <div>
-      <Navbar expand="md" color="dark" dark {...args}>
+      <Navbar expand="md" color="dark" className="mb-5" dark {...args}>
         <NavbarBrand href="/">Event Calendar App</NavbarBrand>
         <NavbarToggler onClick={toggle} />
         <Collapse isOpen={isOpen} navbar>
@@ -29,6 +33,13 @@ function Navigation(args) {
               <NavLink tag={RRNavLink} to="/events">Events</NavLink>
             </NavItem>
           </Nav>
+          {/* <UncontrolledDropdown nav inNavbar dark>
+              <DropdownToggle caret>
+                My Cart
+              </DropdownToggle>
+              <DropdownMenu right>
+              </DropdownMenu>
+            </UncontrolledDropdown> */}
         </Collapse>
       </Navbar>
     </div>
