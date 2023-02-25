@@ -7,6 +7,7 @@ import { Container } from 'reactstrap';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import EventListing from './components/EventListing';
 import EventDetails from './components/EventDetails';
+import EventAdmin from './components/EventAdmin';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -17,6 +18,7 @@ root.render(
       <Routes>
         <Route path="/" element={<App />} />
         <Route path="/events" element={<EventListing />} />
+        <Route exact path="/events/admin" element={<EventAdmin />} />
         <Route path="/events/:event_name" element={<EventDetails />} />
       </Routes>
     </Container>

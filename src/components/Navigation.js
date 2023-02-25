@@ -12,7 +12,7 @@ import {
   DropdownMenu,
   DropdownItem
 } from 'reactstrap';
-import { NavLink as RRNavLink } from 'react-router-dom';
+import { NavLink as RRNavLink, Link } from 'react-router-dom';
 
 function Navigation(args) {
   const [isOpen, setIsOpen] = useState(false);
@@ -33,13 +33,14 @@ function Navigation(args) {
               <NavLink tag={RRNavLink} to="/events">Events</NavLink>
             </NavItem>
           </Nav>
-          {/* <UncontrolledDropdown nav inNavbar dark>
+          <UncontrolledDropdown nav inNavbar dark>
               <DropdownToggle caret>
-                My Cart
+                Admin
               </DropdownToggle>
               <DropdownMenu right>
+                <DropdownItem><Link to="/events/admin">Event Manager</Link></DropdownItem>
               </DropdownMenu>
-            </UncontrolledDropdown> */}
+            </UncontrolledDropdown>
         </Collapse>
       </Navbar>
     </div>
