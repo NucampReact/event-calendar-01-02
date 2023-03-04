@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { EVENTS } from '../data/Events';
-import { Table, Card, CardHeader, CardBody, Form, FormGroup, Input, Button, Label, Alert } from 'reactstrap';
+import { Table, Card, CardHeader, CardBody, Form, FormGroup, Input, Button, Label, Alert, ButtonGroup } from 'reactstrap';
+import EventListing from './EventListing';
+import moment from 'moment';
 
 /**
  * LifeCycle events of a components
@@ -11,18 +13,24 @@ import { Table, Card, CardHeader, CardBody, Form, FormGroup, Input, Button, Labe
  * UseEffect hook = Allows us to run "side effects" during any life cycle event occurrence
  */
 
+const eventFields = {
+  name: '',
+  ticketMin: 0,
+  seatsAvailable: 0,
+  poster: '',
+  date: moment().format('YYYY-MM-DD')
+}
+
 const EventAdmin = () => {
   // Set up a state for each input field
-  const [eventData, setEventData] = useState({});
-  const [eventName, setEventName] = useState();
-  const [seats, setSeats] = useState();
-  const [price, setPrice] = useState();
-  const [poster, setPoster] = useState();
-  const [date, setDate] = useState();
-
+  const [eventData, setEventData] = useState(eventFields);
+  const [errors, setErrors] = useState({});
   const [allEvents, setAllEvents] = useState(EVENTS);
+  
+  const [selectedEvent, setSelectedEvent] = useState(eventFields);
+
   const [disableButton, setDisableButton] = useState(false);
-  const [alert, setAlert] = useState();
+  const [alert, setAlert] = useState({type: 'success', message: ''});
 
   /*
     useEffect takes two arguments:
@@ -33,124 +41,122 @@ const EventAdmin = () => {
         c) [list of dependencies] = only when any of the listed dependencies change
   */
   useEffect(() => {
-    setAlert("You are on an admin screen, be careful!");
+    // setAlert(alert => ({...alert, type: 'warning', message: "You are on an admin screen, be careful!"}));
   }, []);
 
   useEffect(() => {
     // auto-save feature would go great here
-    console.log('null effect')
-    setAlert('Your form has changed');
   })
 
   useEffect(() => {
-    console.log('dependency effect')
-    // only run validation when eventName or price changes
-    let regex = /^[A-Za-z]+$/;
-    console.log('eventName', eventName);
-    if (!regex.test(eventName)) {
-      setAlert('You failed validation');
+    if (Object.keys(errors).length) {
+      setAlert(alert => ({...alert, type: 'danger', message: 'The form has errors'}));
+      setDisableButton(true) 
+    } else {
+      setDisableButton(false);
+      setAlert(alert => ({...alert, type: 'danger', message: ''}));
     }
-  }, [eventName, price]); // only runs when eventName state changes
+  }, [errors])
+
+  useEffect(() => {
+    // only run validation when event name
+    let regex = /^[A-Za-z]+$/;
+    console.log(eventData.name);
+    if (!regex.test(eventData.name)) {
+      setErrors(errors => ({...errors, name: 'must contain alpha characters only'}));
+    } else {
+      setErrors(err => {
+        const {name, ...rest} = err;
+        return rest;
+      });
+    }
+  }, [eventData.name]); // only runs when eventData.name state changes
+
+
+  useEffect(() => {
+    // only run validation when price changes
+    if (eventData.ticketMin < 0) {
+      setErrors(errors => ({...errors, ticketMin: 'must be greater than 0'}));
+    } else {
+      setErrors(err => {
+        const {ticketMin, ...rest} = err;
+        return rest;
+      });
+    }
+  }, [eventData.ticketMin]); // only runs when eventData.ticketMin state changes
 
   const eventNameInputRef = useRef(); // create a pointer and attach to underlying HTML element
 
   const addEvent = () => {
-  //   console.log("EVENT INPUT REF", eventNameInputRef.current.value);
-  //   console.log("EventName: ", eventName);
-  //   console.log("Seats: ", seats);
-  //   console.log("Price: ", price);
-  //   console.log("Poster: ", poster);
-
-  //   let newEvent = {
-  //     name: eventName,
-  //     seatsAvailable: seats,
-  //     ticketMin: price,
-  //     poster: poster,
-  //     date: date
-  //   };
-
-    // Add the newEvent obj into the EVENTS array
-    // TODO: Investigate callbacks with state hooks -> Immutability
-    setAllEvents(prevAllEvents => [ ...prevAllEvents, eventData ]);
+    if (Object.keys(selectedEvent).length) {
+      setAllEvents(prevAllEvents => {
+        const selectedEventIndex = prevAllEvents.findIndex(e => e.id === selectedEvent.id);
+        prevAllEvents[selectedEventIndex] = {...selectedEvent, ...eventData };
+        return [...prevAllEvents];
+      })
+    } else {
+      setAllEvents(prevAllEvents => [ ...prevAllEvents, eventData ]);
+    }
   };
 
   const handleInput = (event) => {
     setEventData(prevEventData => ({ ...prevEventData, [event.target.name]: event.target.value }));
   }
 
-  const handleEventName = (event) => {
-    setEventName(event.target.value);
-    // Validate the user's input
-    // let regex = /^[A-Za-z]+$/;
-    // if (regex.test(event.target.value)) {
-    //   setEventName(event.target.value);
-    //   setDisableButton(false);
-    // } else {
-    //   setDisableButton(true);
-    // }
+  const editEvent = (event) => {
+    setSelectedEvent(event);
   }
-  const handleSeats = (event) => {
-    setSeats(event.target.value);
+
+  const deleteEvent = (event) => {
+    setAllEvents(prevAllEvents => {
+      const newEvents = prevAllEvents.filter(e => e.id !== event.id);
+      return newEvents;
+    })
   }
-  const handlePrice = (event) => {
-    setPrice(event.target.value);
+
+  const clearEvent = () => {
+    setEventData(eventFields);
+    setSelectedEvent(eventFields);
   }
-  const handlePoster = (event) => {
-    setPoster(event.target.value);
-  }
-  const handleDate = (event) => {
-    setDate(event.target.value);
-  }
+
   return (
     <Card>
       <CardHeader>Event Management</CardHeader>
       <CardBody>
-        {alert && <Alert color='danger'>{alert}</Alert>}
+        {alert.message && <Alert color={alert.type}>{alert.message}</Alert>}
         <Form>
           <FormGroup>
             <Label>Event Name</Label>
-            <Input innerRef={eventNameInputRef} name="name" onChange={handleInput} />
+            <Input key={selectedEvent.name || eventData.name} innerRef={eventNameInputRef} name="name" defaultValue={selectedEvent.name || eventData.name} onChange={handleInput} />
+            {errors.name && <p className="text-danger">{errors.name}</p>}
           </FormGroup>
           <FormGroup>
             <Label>Number of seats</Label>
-            <Input name="seatsAvailable" type="number" onChange={handleInput} />
+            <Input key={selectedEvent.seatsAvailable || eventData.seatsAvailable} name="seatsAvailable" type="number" defaultValue={selectedEvent.seatsAvailable || eventData.seatsAvailable} onChange={handleInput} />
+            {errors.seatsAvailable && <p className="text-danger">{errors.seatsAvailable}</p>}
           </FormGroup>
           <FormGroup>
             <Label>Ticket Price</Label>
-            <Input name="ticketMin" type="number" onChange={handleInput} />
+            <Input key={selectedEvent.ticketMin || eventData.ticketMin} name="ticketMin" type="number" defaultValue={selectedEvent.ticketMin || eventData.ticketMin} onChange={handleInput} />
+            {errors.ticketMin && <p className="text-danger">{errors.ticketMin}</p>}
           </FormGroup>
           <FormGroup>
             <Label>Event Poster</Label>
-            <Input name="poster" onChange={handleInput} />
+            <Input key={selectedEvent.poster || eventData.poster} name="poster" defaultValue={selectedEvent.poster || eventData.poster} onChange={handleInput} />
+            {errors.poster && <p className="text-danger">{errors.poster}</p>}
           </FormGroup>
           <FormGroup>
             <Label>Event Date</Label>
-            <Input type="date" name="date" onChange={handleInput} />
+            <Input key={selectedEvent.date || eventData.date} type="date" name="date" defaultValue={moment(selectedEvent.date).format('YYYY-MM-DD') || moment(eventData.date).format('YYYY-MM-DD')} onChange={handleInput} />
+            {errors.date && <p className="text-danger">{errors.date}</p>}
           </FormGroup>
-          <Button disabled={disableButton} color="success" onClick={addEvent}>Add Event</Button>
+          <ButtonGroup>
+            <Button disabled={disableButton} color="success" onClick={addEvent}>Add/Update Event</Button>
+            <Button color="secondary" onClick={clearEvent}>Clear</Button>
+          </ButtonGroup>
         </Form>
-        <Table>
-          <thead>
-            <th></th>
-            <th>Name</th>
-            <th>Ticket Average</th>
-            <th>Seats Remaining</th>
-            <th>Start Date</th>
-          </thead>
-          <tbody>
-            {allEvents.map(event => {
-              return (
-                <tr key={event.name}>
-                  <td><img alt={event.name} src={event.poster} width="40" /></td>
-                  <td>{event.name}</td>
-                  <td>{event.ticketMin}</td>
-                  <td>{event.seatsAvailable}</td>
-                  <td>{event.date}</td>
-                </tr>
-              )
-            })}
-          </tbody>
-        </Table>
+        <hr />
+        <EventListing handleEdit={editEvent} handleDelete={deleteEvent} eventList={allEvents} />
       </CardBody>
     </Card>
   )

@@ -33,12 +33,21 @@ function Navigation(args) {
               <NavLink tag={RRNavLink} to="/events">Events</NavLink>
             </NavItem>
           </Nav>
-          <UncontrolledDropdown nav inNavbar dark>
+          <UncontrolledDropdown nav>
+              <DropdownToggle caret>
+                My Cart (0)
+              </DropdownToggle>
+              <DropdownMenu flip>
+              </DropdownMenu>
+            </UncontrolledDropdown>
+          <UncontrolledDropdown nav>
               <DropdownToggle caret>
                 Admin
               </DropdownToggle>
-              <DropdownMenu right>
-                <DropdownItem><Link to="/events/admin">Event Manager</Link></DropdownItem>
+              <DropdownMenu flip>
+                <Link to="/events/admin">
+                  <DropdownItem>Event Manager</DropdownItem>
+                </Link>
               </DropdownMenu>
             </UncontrolledDropdown>
         </Collapse>

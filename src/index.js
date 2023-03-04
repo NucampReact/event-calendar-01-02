@@ -17,7 +17,7 @@ root.render(
     <Container>
       <Routes>
         <Route path="/" element={<App />} />
-        <Route path="/events" element={<EventListing />} />
+        <Route path="/events" element={<EventListing forCustomer />} />
         <Route exact path="/events/admin" element={<EventAdmin />} />
         <Route path="/events/:event_name" element={<EventDetails />} />
       </Routes>
