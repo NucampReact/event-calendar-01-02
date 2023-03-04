@@ -8,21 +8,27 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import EventListing from './components/EventListing';
 import EventDetails from './components/EventDetails';
 import EventAdmin from './components/EventAdmin';
+import { Provider } from 'react-redux';
+import store from './redux/Store';
 import 'bootstrap/dist/css/bootstrap.min.css';
+
+const MyStore = store();
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  <BrowserRouter>
-    <Navigation />
-    <Container>
-      <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/events" element={<EventListing forCustomer />} />
-        <Route exact path="/events/admin" element={<EventAdmin />} />
-        <Route path="/events/:event_name" element={<EventDetails />} />
-      </Routes>
-    </Container>
-  </BrowserRouter>
+  <Provider store={MyStore}>
+    <BrowserRouter>
+      <Navigation />
+      <Container>
+        <Routes>
+          <Route path="/" element={<App />} />
+          <Route path="/events" element={<EventListing forCustomer />} />
+          <Route exact path="/events/admin" element={<EventAdmin />} />
+          <Route path="/events/:event_name" element={<EventDetails />} />
+        </Routes>
+      </Container>
+    </BrowserRouter>
+  </Provider>
 );
 
 /*

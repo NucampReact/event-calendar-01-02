@@ -3,6 +3,7 @@ import { Card, Button, CardHeader, CardBody, Table, ButtonGroup } from 'reactstr
 import { EVENTS } from '../data/Events';
 import { Link } from 'react-router-dom';
 import EventCart from './EventCart';
+import { useSelector } from 'react-redux';
 
 
 // <EventListing /> = EventListing();
@@ -22,9 +23,24 @@ import EventCart from './EventCart';
     EventListing() => quantity = 2 // click +
     EventListing() => quantity = 3
 */
-const initialEventData = EVENTS.map(e => ({ name: e.name, quantity: 0 }));
-const EventListing = ({ handleDelete, handleEdit, eventList = EVENTS, forCustomer }) => {
+
+/*
+  Redux hooks:
+    1. useReducer(): Use the reducer function
+    2. useDispatch(): Use the dispatch layer
+    3. useSelector(): Select the data from store
+*/
+
+const EventListing = ({ handleDelete, handleEdit, forCustomer }) => {
+
+  // How do I select data from the redux store?
+  const eventList = useSelector(function(state) {
+    console.log("Redux state", state);
+    return state.eventList;
+  });
+
   // useState() returns an ARRAY of two values [data, a function to set the data]
+  const initialEventData = eventList.map(event => ({ id: event.id, name: event.name, quantity: 0}));
   const [events, setEvents] = useState(initialEventData);
   const [addedToCart, setAddedToCart] = useState(false);
 
@@ -82,7 +98,7 @@ const EventListing = ({ handleDelete, handleEdit, eventList = EVENTS, forCustome
       return (
         <td>
           <Button color="info" size="sm" onClick={e => decrementQuantity(event.name)} >-</Button><hr />
-          <p>{events.find(e => e.name === event.name).quantity}</p>
+          <p>{events.find(e => e.id === event.id).quantity}</p>
           <Button color="info" size="sm" onClick={e => incrementQuantity(event.name)}>+</Button>
         </td>
       )

@@ -1,8 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { EVENTS } from '../data/Events';
 import { Table, Card, CardHeader, CardBody, Form, FormGroup, Input, Button, Label, Alert, ButtonGroup } from 'reactstrap';
 import EventListing from './EventListing';
 import moment from 'moment';
+import { AddEvent } from '../redux/Actions';
 
 /**
  * LifeCycle events of a components
@@ -22,6 +24,9 @@ const eventFields = {
 }
 
 const EventAdmin = () => {
+
+  const dispatch = useDispatch();
+
   // Set up a state for each input field
   const [eventData, setEventData] = useState(eventFields);
   const [errors, setErrors] = useState({});
@@ -60,9 +65,9 @@ const EventAdmin = () => {
 
   useEffect(() => {
     // only run validation when event name
-    let regex = /^[A-Za-z]+$/;
-    console.log(eventData.name);
-    if (!regex.test(eventData.name)) {
+    let regex = /^[^0-9]+$/;
+    let name = selectedEvent.name || eventData.name;
+    if (!regex.test(name)) {
       setErrors(errors => ({...errors, name: 'must contain alpha characters only'}));
     } else {
       setErrors(err => {
@@ -70,7 +75,7 @@ const EventAdmin = () => {
         return rest;
       });
     }
-  }, [eventData.name]); // only runs when eventData.name state changes
+  }, [eventData.name, selectedEvent.name]); // only runs when eventData.name state changes
 
 
   useEffect(() => {
@@ -88,13 +93,20 @@ const EventAdmin = () => {
   const eventNameInputRef = useRef(); // create a pointer and attach to underlying HTML element
 
   const addEvent = () => {
-    if (Object.keys(selectedEvent).length) {
+
+    // Handling edit vs new
+    if (selectedEvent.name) {
       setAllEvents(prevAllEvents => {
         const selectedEventIndex = prevAllEvents.findIndex(e => e.id === selectedEvent.id);
         prevAllEvents[selectedEventIndex] = {...selectedEvent, ...eventData };
         return [...prevAllEvents];
       })
     } else {
+      // Send/Dispatch the action to the reducer
+      // The dispatch function needs to accept an action object
+      console.log("Adding new event");
+      const actionObject = AddEvent(eventData);
+      dispatch(actionObject);
       setAllEvents(prevAllEvents => [ ...prevAllEvents, eventData ]);
     }
   };
@@ -156,7 +168,7 @@ const EventAdmin = () => {
           </ButtonGroup>
         </Form>
         <hr />
-        <EventListing handleEdit={editEvent} handleDelete={deleteEvent} eventList={allEvents} />
+        <EventListing handleEdit={editEvent} handleDelete={deleteEvent} />
       </CardBody>
     </Card>
   )
