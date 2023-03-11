@@ -1,15 +1,20 @@
 // callback function Array.reduce
 // Reducer is responsible for managing the data in our application
-import { EVENTS } from '../data/Events';
+// import { EVENTS } from '../data/Events';
 
 const initialState = {
-  eventList: EVENTS,
-  myCart: []
+  eventList: [],
+  myCart: [],
+  isLoading: false
 };
 
 const EventReducer = (state = initialState, action) => {
   console.log("Action is", action);
   switch(action.type) {
+    case 'SHOW_LOADING':
+      return { ...state, isLoading: true };
+    case 'SAVE_EVENTS':
+      return { ...state, eventList: action.eventsList }
     case 'CLEAR_CART':
       return { ...state, myCart: [] };
     case 'ADD_TO_CART':

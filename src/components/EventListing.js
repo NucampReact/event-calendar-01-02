@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, Button, CardHeader, CardBody, Table, ButtonGroup } from 'reactstrap';
 import { EVENTS } from '../data/Events';
 import { Link } from 'react-router-dom';
 import EventCart from './EventCart';
 import { useDispatch, useSelector } from 'react-redux';
-import { AddToCart, ClearCart } from '../redux/Actions';
+import { AddToCart, ClearCart, SaveEvents } from '../redux/Actions';
 
 
 // <EventListing /> = EventListing();
@@ -49,6 +49,21 @@ const EventListing = ({ handleDelete, handleEdit, forCustomer }) => {
   const [addedToCart, setAddedToCart] = useState(false);
 
   const dispatch = useDispatch();
+
+  // first time the component loads, go get the events
+  useEffect(() => {
+    fetch('http://localhost:3001/events')
+      .then(function(response) {
+        return response.json(); // returns a new promise
+      })
+      .then(function(eventData) {
+        dispatch(SaveEvents(eventData));
+        console.log('Event data from server', eventData);
+      })
+      .catch(function() {
+        console.log('Failed to fetch events');
+      })
+  }, [])
 
   // Challenge: Make quantity updates only affect the event you're looking at
   // { event: 'Boys2men', quantity: 0 }

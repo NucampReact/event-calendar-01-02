@@ -11,12 +11,35 @@ export const ClearCart = () => {
   }
 }
 
-export const AddEvent = (addedEvent) => {
+export const ShowLoading = () => {
   return {
-    type: 'ADD_EVENT', // at very least, I need a unique ID for each event
-    event: addedEvent,
-    payload: ''
+    type: 'SHOW_LOADING'
   }
+}
+
+export const AddEvent = (addedEvent) => dispatch => {
+  dispatch(ShowLoading());
+  // make a call to the json server to save the event in the array there
+
+  // make async call to the server using thunk
+  return fetch('http://localhost:3001/events', {
+    method: 'POST', // save new event
+    body: JSON.stringify(addedEvent),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }).then(function(response) {
+    if (response.ok) {
+      // if response has 200 code
+      // go make another fetch call to GET the newly updated events list
+      // OR just save the new event into Redux store
+      dispatch({type: 'ADD_EVENT', event: addedEvent});
+    } else {
+      throw new Error();
+    }
+  }).catch(function() {
+
+  })
 };
 
 export const DeleteEvent = (eventId) => {
@@ -32,3 +55,10 @@ export const UpdateEvent = (event) => {
     updatedEvent: event
   }
 };
+
+export const SaveEvents = (eventsList) => {
+  return {
+    type: 'SAVE_EVENTS',
+    eventsList
+  }
+}

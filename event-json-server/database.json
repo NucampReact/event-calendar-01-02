@@ -1,0 +1,55 @@
+{
+  "events": [
+    {
+      "id": 1,
+      "name": "Boys II Men Concert",
+      "date": "2023-05-01",
+      "ticketMin": 100,
+      "ticketMax": 2000,
+      "seatsAvailable": 300,
+      "poster": "http://localhost:3001/images/boys2men.jpeg"
+    },
+    {
+      "id": 2,
+      "name": "Easter Egg Hunt",
+      "date": "2023-04-23",
+      "ticketMin": 5,
+      "ticketMax": 20,
+      "seatsAvailable": 30,
+      "poster": "http://localhost:3001/images/easter.jpeg"
+    },
+    {
+      "id": 3,
+      "name": "Summer Festival",
+      "date": "2023-06-10",
+      "ticketMin": 40,
+      "ticketMax": 200,
+      "seatsAvailable": 50,
+      "poster": "http://localhost:3001/images/summer.jpeg"
+    },
+    {
+      "id": 4,
+      "name": "Family Game Night",
+      "date": "2023-08-03",
+      "ticketMin": 100,
+      "ticketMax": 2000,
+      "seatsAvailable": 300,
+      "poster": "http://localhost:3001/images/familygamenight.png"
+    },
+    {
+      "name": "A New",
+      "seatsAvailable": "21",
+      "ticketMin": "11",
+      "date": "2023-04-05",
+      "id": 5
+    },
+    {
+      "name": "F",
+      "seatsAvailable": "3",
+      "ticketMin": "2",
+      "poster": "1",
+      "id": 6
+    }
+  ],
+  "cart": []
+}
