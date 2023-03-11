@@ -13,9 +13,12 @@ import {
   DropdownItem
 } from 'reactstrap';
 import { NavLink as RRNavLink, Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 function Navigation(args) {
   const [isOpen, setIsOpen] = useState(false);
+
+  const myCart = useSelector(state => state.myCart);
 
   const toggle = () => setIsOpen(!isOpen);
 
@@ -35,9 +38,12 @@ function Navigation(args) {
           </Nav>
           <UncontrolledDropdown nav>
               <DropdownToggle caret>
-                My Cart (0)
+                My Cart ({myCart.length})
               </DropdownToggle>
               <DropdownMenu flip>
+                {myCart.map(cartItem => {
+                  return <DropdownItem>{cartItem.name}: {cartItem.quantity}</DropdownItem>
+                })}
               </DropdownMenu>
             </UncontrolledDropdown>
           <UncontrolledDropdown nav>

@@ -1,10 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { EVENTS } from '../data/Events';
-import { Table, Card, CardHeader, CardBody, Form, FormGroup, Input, Button, Label, Alert, ButtonGroup } from 'reactstrap';
+import { Card, CardHeader, CardBody, Form, FormGroup, Input, Button, Label, Alert, ButtonGroup } from 'reactstrap';
 import EventListing from './EventListing';
 import moment from 'moment';
-import { AddEvent } from '../redux/Actions';
+import { AddEvent, DeleteEvent, UpdateEvent } from '../redux/Actions';
 
 /**
  * LifeCycle events of a components
@@ -28,9 +27,8 @@ const EventAdmin = () => {
   const dispatch = useDispatch();
 
   // Set up a state for each input field
-  const [eventData, setEventData] = useState(eventFields);
+  const [eventData, setEventData] = useState({  });
   const [errors, setErrors] = useState({});
-  const [allEvents, setAllEvents] = useState(EVENTS);
   
   const [selectedEvent, setSelectedEvent] = useState(eventFields);
 
@@ -96,18 +94,13 @@ const EventAdmin = () => {
 
     // Handling edit vs new
     if (selectedEvent.name) {
-      setAllEvents(prevAllEvents => {
-        const selectedEventIndex = prevAllEvents.findIndex(e => e.id === selectedEvent.id);
-        prevAllEvents[selectedEventIndex] = {...selectedEvent, ...eventData };
-        return [...prevAllEvents];
-      })
+      dispatch(UpdateEvent({ ...selectedEvent, ...eventData}));
     } else {
       // Send/Dispatch the action to the reducer
       // The dispatch function needs to accept an action object
       console.log("Adding new event");
       const actionObject = AddEvent(eventData);
       dispatch(actionObject);
-      setAllEvents(prevAllEvents => [ ...prevAllEvents, eventData ]);
     }
   };
 
@@ -120,10 +113,7 @@ const EventAdmin = () => {
   }
 
   const deleteEvent = (event) => {
-    setAllEvents(prevAllEvents => {
-      const newEvents = prevAllEvents.filter(e => e.id !== event.id);
-      return newEvents;
-    })
+    dispatch(DeleteEvent(event.id));
   }
 
   const clearEvent = () => {

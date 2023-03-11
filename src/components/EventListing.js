@@ -3,7 +3,8 @@ import { Card, Button, CardHeader, CardBody, Table, ButtonGroup } from 'reactstr
 import { EVENTS } from '../data/Events';
 import { Link } from 'react-router-dom';
 import EventCart from './EventCart';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { AddToCart, ClearCart } from '../redux/Actions';
 
 
 // <EventListing /> = EventListing();
@@ -39,10 +40,15 @@ const EventListing = ({ handleDelete, handleEdit, forCustomer }) => {
     return state.eventList;
   });
 
+  
+
   // useState() returns an ARRAY of two values [data, a function to set the data]
   const initialEventData = eventList.map(event => ({ id: event.id, name: event.name, quantity: 0}));
+  console.log("initial event data", initialEventData)
   const [events, setEvents] = useState(initialEventData);
   const [addedToCart, setAddedToCart] = useState(false);
+
+  const dispatch = useDispatch();
 
   // Challenge: Make quantity updates only affect the event you're looking at
   // { event: 'Boys2men', quantity: 0 }
@@ -76,12 +82,13 @@ const EventListing = ({ handleDelete, handleEdit, forCustomer }) => {
   const addToCart = (event) => {
     // Toggle the state 'addedToCart' to true
     setAddedToCart(true);
+    dispatch(AddToCart(events.filter(e => e.quantity > 0)));
   }
 
   const removeCart = (event) => {
     // Toggle the state 'addedToCart' to true
     setAddedToCart(false);
-    const initialEventData = EVENTS.map(e => ({ name: e.name, quantity: 0 }));
+    dispatch(ClearCart());
     setEvents(initialEventData);
   }
 
@@ -94,6 +101,7 @@ const EventListing = ({ handleDelete, handleEdit, forCustomer }) => {
   }
 
   const showActions = (event) => {
+    console.log('showing actions', event, events);
     if (forCustomer) {
       return (
         <td>

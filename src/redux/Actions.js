@@ -1,9 +1,17 @@
-export const AddToCart = () => {
-
+export const AddToCart = (cart) => {
+  return {
+    type: 'ADD_TO_CART',
+    cart
+  }
 };
 
+export const ClearCart = () => {
+  return {
+    type: 'CLEAR_CART'
+  }
+}
+
 export const AddEvent = (addedEvent) => {
-  console.log("Adding event from dispatcher")
   return {
     type: 'ADD_EVENT', // at very least, I need a unique ID for each event
     event: addedEvent,
@@ -11,10 +19,16 @@ export const AddEvent = (addedEvent) => {
   }
 };
 
-export const DeleteEvent = () => {
-
+export const DeleteEvent = (eventId) => {
+  return {
+    type: 'DELETE_EVENT',
+    deletedEventId: eventId
+  }
 };
 
-export const EditEvent = () => {
-
+export const UpdateEvent = (event) => {
+  return {
+    type: 'UPDATE_EVENT',
+    updatedEvent: event
+  }
 };

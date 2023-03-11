@@ -1,6 +1,4 @@
-import logo from './logo.svg';
 import './App.css';
-import EventListing from './components/EventListing';
 
 /*
   JSX (JavaScript XML): Markup language that translates XML into JavaScript then into HTML

@@ -4,12 +4,11 @@ import { Card, CardBody, CardHeader, Table } from 'reactstrap';
 const EventCart = ({ cart, show }) => {
   if (!show) return null;
   return (
-    <Card>
+    <Card className="mt-3">
       <CardHeader>My Cart</CardHeader>
       <CardBody>
         <Table>
           <thead>
-            <th></th>
             <th>Name</th>
             <th>Purchased Tickets</th>
           </thead>
